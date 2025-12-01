@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: linear-gradient(
+    180deg,
+    #c7d2fe 0%,
+    #a5b4fc 40%,
+    #818cf8 80%,
+    #4f46e5 100%
+  );
+  animation: skyMove 12s ease infinite;
+  overflow: hidden; /* gunakan properti CSS biasa */
+}
+
+@theme {
+  --animate-rise: rise var(--speed) linear forwards;
+  --animate-pop: pop 0.2s ease-out forwards;
+  /* --animate-shake: rotate-shake 250ms ease-out infinite; */
+
+  @keyframes rotate-shake {
+    0%: {
+      transform: "rotate(0deg)";
+    }
+
+    10%: {
+      transform: "rotate(-45deg)";
+    }
+
+    20%: {
+      transform: "rotate(45deg)";
+    }
+
+    30%: {
+      transform: "rotate(-45deg)";
+    }
+
+    40%: {
+      transform: "rotate(45deg)";
+    }
+
+    50%: {
+      transform: "rotate(-30deg)";
+    }
+
+    60%: {
+      transform: "rotate(30deg)";
+    }
+
+    70%: {
+      transform: "rotate(-30deg)";
+    }
+
+    80%: {
+      transform: "rotate(30deg)";
+    }
+
+    90%: {
+      transform: "rotate(15deg)";
+    }
+
+    100%: {
+      transform: "rotate(0deg)";
+    }
+  }
+
+  @keyframes skyMove {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    100% {
+      background-position: 0% 0%;
+    }
+  }
+
+  @keyframes rise {
+    0% {
+      transform: translateY(120%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100vh);
+      opacity: 0.7;
+    }
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+}

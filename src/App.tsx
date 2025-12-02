@@ -1,31 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // Audio
-import BubblePop from "./assets/audio/bubble-pop.mp3";
-import WrongBubblePop from "./assets/audio/wrong-bubble-pop.mp3";
-import LuckyBubblePop from "./assets/audio/lucky-bubble-pop.mp3";
-import TimeTicking from "./assets/audio/time-ticking.mp3";
+import BubblePop from "/audio/bubble-pop.mp3";
+import WrongBubblePop from "/audio/wrong-bubble-pop.mp3";
+import LuckyBubblePop from "/audio/lucky-bubble-pop.mp3";
+import TimeTicking from "/audio/time-ticking.mp3";
 // Utils
 import getRandomNumber from "./utils/functions/getRandomNumber";
 import getBubbleType from "./utils/functions/getBubbleType";
-import formatSigned from "./utils/functions/formatSigned";
-import BubblesSetting from "./data/BubblesSetting";
 import SettingsModal from "./components/Modal/SettingsModal";
 import PauseModal from "./components/Modal/PauseModal";
-
-type BubbleType = "ordinary" | "danger" | "lucky";
-
-export type Bubble = {
-  id: number;
-  x: number;
-  xRef: number;
-  y: number;
-  isPopped: boolean;
-  type: BubbleType;
-  settings: ReturnType<typeof BubblesSetting>["ordinary"];
-};
+import BubbleSetting from "./data/BubbleSetting";
+import { type BubbleType, type BubbleVariant } from "./type/Bubble";
+import Bubble from "./components/Fragments/Bubble";
+import BoardGame from "./components/Fragments/BoardGame";
+import SettingButton from "./components/Fragments/SettingButton";
 
 export default function App() {
-  const [bubbles, setBubbles] = useState<Bubble[]>([]);
+  const [bubbles, setBubbles] = useState<BubbleType[]>([]);
   const [score, setScore] = useState(0);
   const [spawnRate, setSpawnRate] = useState(650);
   const [time, setTime] = useState<number | null>(105);
@@ -33,10 +24,22 @@ export default function App() {
   const [isSetting, setIsSetting] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
 
-  const bubbleSettings = BubblesSetting(speedRate);
-  const popBubble = (id: number, type: BubbleType, isPopped: boolean) => {
+  const timeRef = useRef<number | null>(105);
+
+  useEffect(() => {
+    if (isSetting) {
+      timeRef.current = time;
+    }
+  });
+
+  const bubbleSettings = BubbleSetting(speedRate);
+  const handlePopBubble = (
+    id: string,
+    variant: BubbleVariant,
+    isPopped: boolean
+  ) => {
     if (isPopped) return;
-    const score = bubbleSettings[type].score;
+    const score = bubbleSettings[variant].score;
     const popSound = new Audio(BubblePop);
     const wrongPopSound = new Audio(WrongBubblePop);
     const luckyPopSound = new Audio(LuckyBubblePop);
@@ -50,8 +53,8 @@ export default function App() {
     });
     setBubbles((prev) =>
       prev.map((bubble) => {
-        if (type === "danger") wrongPopSound.play();
-        if (type === "lucky") luckyPopSound.play();
+        if (variant === "danger") wrongPopSound.play();
+        if (variant === "lucky") luckyPopSound.play();
 
         return bubble.id === id ? { ...bubble, isPopped: true } : bubble;
       })
@@ -64,9 +67,11 @@ export default function App() {
 
   const handleRestartGame = () => {
     setTime(105);
+    setScore(0);
     setIsSetting(true);
     setIsPaused(false);
     setBubbles([]);
+    setTime(timeRef.current);
   };
 
   // Generate Bubble
@@ -76,9 +81,9 @@ export default function App() {
       const bubbleType = getBubbleType();
       const generateX = getRandomNumber(10, 90);
 
-      const newBubble: Bubble = {
+      const newBubble: BubbleType = {
         id: Date.now(),
-        type: bubbleType,
+        variant: bubbleType,
         x: generateX,
         xRef: generateX,
         y: -10,
@@ -98,7 +103,7 @@ export default function App() {
     const TimeTickingSound = new Audio(TimeTicking);
 
     const interval = setInterval(() => {
-      if (time <= 5) {
+      if (time == 4) {
         TimeTickingSound.play();
       }
 
@@ -157,65 +162,24 @@ export default function App() {
   return (
     <>
       <main>
-        {/* Settings */}
-        <button
+        {/* Setting Button */}
+        <SettingButton
           onClick={(e) => {
             e.stopPropagation();
             setIsPaused(true);
           }}
-          className="absolute top-3 left-3 border-2 border-lime-300 bg-lime-200 rounded-full group cursor-pointer"
-        >
-          <img
-            src="/src/assets/icons/setting.svg"
-            alt="Settings"
-            className="w-11 h-11 group-hover:rotate-180 transition duration-600"
-          />
-          <div className="absolute border-t-2 border-r-2 border-b-2 border-lime-300 -z-1 rounded-r-full top-0.5 bottom-0.5 pl-7 pr-4 bg-lime-200 opacity-0 group-hover:opacity-100 group-hover:translate-x-6 transition duration-600 flex items-center font-semibold">
-            Settings
-          </div>
-        </button>
+        />
 
-        <div className="absolute top-3 right-3 flex gap-2">
-          {/* Timer */}
-          <div
-            className={`${
-              time !== null && time <= 10
-                ? "animate-pulse bg-red-600/90"
-                : "bg-white/70"
-            } px-4 py-2 w-full transition rounded-xl backdrop-blur-xl border border-white shadow-md text-gray-900 font-mono text-2xl font-bold`}
-          >
-            <span className="mr-1">Time:</span>
-            {time != null ? time : "∞"}
-          </div>
+        {/* Board Game */}
+        <BoardGame score={score} time={time} />
 
-          {/* Score */}
-          <div className="px-4 py-2 w-full rounded-xl bg-white/75 backdrop-blur-xl border border-white shadow-md text-gray-900 font-mono text-2xl font-bold">
-            <span className="mr-1">Score:</span>
-            {score}
-          </div>
-        </div>
+        {/* Spawn Bubbles */}
         {bubbles.map((bubble) => (
-          <div
-            key={bubble.id}
-            className={`absolute flex justify-center items-center bottom-0 animate-rise bg-blue-300 rounded-full cursor-pointer transition`}
-            onClick={() => popBubble(bubble.id, bubble.type, bubble.isPopped)}
-            style={{
-              bottom: `${bubble.y}%`,
-              left: `${bubble.x}%`,
-              width: bubble.settings.size,
-              height: bubble.settings.size,
-              background: bubble.settings.color,
-              animation: bubble.isPopped ? "var(--animate-pop)" : "",
-            }}
-          >
-            {!bubble.isPopped && (
-              <span className="text-xl font-semibold font-mono">
-                {formatSigned(bubble.settings.score)}
-              </span>
-            )}
-          </div>
+          <Bubble key={bubble.id} bubble={bubble} onPop={handlePopBubble} />
         ))}
       </main>
+
+      {/* Setting Modal */}
       {isSetting && (
         <SettingsModal
           spawnRate={spawnRate}
@@ -228,13 +192,15 @@ export default function App() {
           setIsSetting={setIsSetting}
         />
       )}
+
+      {/* Paused Modal */}
       {isPaused && (
         <PauseModal
           setIsPaused={setIsPaused}
           setIsSetting={setIsSetting}
           setBubbles={setBubbles}
           score={score}
-          time={time as number}
+          time={time}
           onRestart={handleRestartGame}
         />
       )}

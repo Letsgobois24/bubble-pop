@@ -1,6 +1,6 @@
 import getRandomNumber from "../utils/functions/getRandomNumber";
 
-const BubblesSetting = (speedRate: number) => {
+const BubbleSetting = (speedRate: number) => {
   return {
     ordinary: {
       color:
@@ -41,4 +41,5 @@ const BubblesSetting = (speedRate: number) => {
   };
 };
 
-export default BubblesSetting;
+export default BubbleSetting;
+export type BubbleSettingType = ReturnType<typeof BubbleSetting>["ordinary"];

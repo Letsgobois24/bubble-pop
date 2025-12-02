@@ -1,24 +1,12 @@
 import Modal from "./Modal";
-import difficultyStyle, { type DifficultyType } from "../../data/difficulty";
+import { type DifficultyType } from "../../data/Difficulty/DifficultyStyle";
 import { useState } from "react";
-
-const difficultySettings = {
-  Hard: {
-    spawnRate: 475,
-    time: 70,
-    speedRate: 1.15,
-  },
-  Normal: {
-    spawnRate: 650,
-    time: 105,
-    speedRate: 1,
-  },
-  Easy: {
-    spawnRate: 825,
-    time: 145,
-    speedRate: 0.85,
-  },
-};
+import InputRange from "../Fragments/Input/InputRange";
+import difficultySettings from "../../data/Difficulty/DifficultySettings";
+import RangeWithButton from "../Fragments/Input/RangeWithButton";
+import Dropdown from "../Fragments/Dropdown";
+import Label from "../Elements/Label";
+import DifficultyRows from "../Fragments/DifficultyRows";
 
 type PropsType = {
   onClose: () => void;
@@ -42,55 +30,39 @@ export default function SettingsModal({
 }: PropsType) {
   const [isDropdown, setIsDropdown] = useState(false);
   const [difficulty, setDifficulty] = useState<DifficultyType>("Normal");
+  const isDisabled = difficulty !== "Custom";
+
+  const handleChangeDifficulty = (item: DifficultyType) => {
+    setDifficulty(item);
+    if (item !== "Custom") {
+      setSpawnRate(difficultySettings[item].spawnRate);
+      setTime(difficultySettings[item].time);
+      setSpeedRate(difficultySettings[item].speedRate);
+      return;
+    }
+    setIsDropdown(true);
+  };
 
   return (
-    <Modal onClose={() => setIsSetting(false)} title="Game Settings">
+    <Modal size="max-w-xl" title="Game Settings">
       <main className="p-4 md:p-5">
         <div className="flex flex-col gap-y-1 mb-6">
           <div>
-            <label className="block mb-2 text-sm font-semibold text-gray-900">
-              Difficulty
-            </label>
-            <div className="flex justify-between font-semibold">
-              {(Object.keys(difficultyStyle) as DifficultyType[]).map(
-                (item, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setDifficulty(item);
-                      if (item !== "Custom") {
-                        setSpawnRate(difficultySettings[item].spawnRate);
-                        setTime(difficultySettings[item].time);
-                        setSpeedRate(difficultySettings[item].speedRate);
-                        return;
-                      }
-                      setIsDropdown(true);
-                    }}
-                    className={`px-5 py-2 rounded-full cursor-pointer ${
-                      difficultyStyle[item].style
-                    } ${
-                      difficulty === item
-                        ? difficultyStyle[item].active
-                        : difficultyStyle[item].normal
-                    }`}
-                  >
-                    {item}
-                  </button>
-                )
-              )}
-            </div>
-          </div>
-
-          <div className="self-end">
-            <img
-              src="/src/assets/icons/dropdown.svg"
-              className={`opacity-80 cursor-pointer transition duration-400 p-2 ${
-                isDropdown ? "-rotate-180" : ""
-              }`}
-              alt="Dropdown"
-              onClick={() => setIsDropdown(!isDropdown)}
+            <Label>Difficulty</Label>
+            <DifficultyRows
+              difficulty={difficulty}
+              onClick={handleChangeDifficulty}
             />
           </div>
+
+          {/* Dropdown */}
+          <Dropdown
+            className="self-end"
+            isDropdown={isDropdown}
+            onClick={() => setIsDropdown(!isDropdown)}
+          />
+
+          {/* Range Inputs */}
           <div
             className={`transition duration-400 flex justify-around ${
               isDropdown
@@ -99,59 +71,38 @@ export default function SettingsModal({
             }`}
           >
             {/* Spawn Rate */}
-            <div>
-              <label className="block mb-2 text-sm font-semibold text-gray-900">
-                Spawn Rate
-              </label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="range"
-                  value={spawnRate}
-                  min={300}
-                  max={1000}
-                  onChange={(e) => setSpawnRate(Number(e.currentTarget.value))}
-                />
-                <span className="text-sm">{spawnRate}</span>
-              </div>
-            </div>
+            <InputRange
+              label="Spawn Rate"
+              value={spawnRate}
+              min={300}
+              max={1000}
+              step={25}
+              onChange={(e) => setSpawnRate(Number(e.currentTarget.value))}
+              isDisabled={isDisabled}
+            />
             {/* Time */}
-            <div>
-              <label className="block mb-2 text-sm font-semibold text-gray-900">
-                Time
-              </label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="range"
-                  value={time || 300}
-                  min={30}
-                  max={180}
-                  onChange={(e) => setTime(Number(e.currentTarget.value))}
-                />
-                <span className="text-sm">{time || "∞"}</span>
-                <button
-                  onClick={() => setTime(null)}
-                  className="font-semibold cursor-pointer flex justify-center items-center border border-slate-300 w-6 h-6 rounded bg-slate-200 hover:bg-slate-300"
-                >
-                  ∞
-                </button>
-              </div>
-            </div>
+            <RangeWithButton
+              label="Time"
+              value={time}
+              min={30}
+              max={180}
+              step={15}
+              onClick={() => setTime(null)}
+              onChange={(e) => setTime(Number(e.currentTarget.value))}
+              isDisabled={isDisabled}
+            />
+
             {/* Bubble Speed */}
             <div>
-              <label className="block mb-2 text-sm font-semibold text-gray-900">
-                Speed Rate
-              </label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="range"
-                  step="0.1"
-                  value={speedRate}
-                  min="0.7"
-                  max="1.3"
-                  onChange={(e) => setSpeedRate(Number(e.currentTarget.value))}
-                />
-                <span className="text-sm">{speedRate.toFixed(1)}</span>
-              </div>
+              <InputRange
+                label="Speed Rate"
+                value={speedRate.toFixed(2)}
+                min={0.7}
+                max={1.3}
+                step={0.05}
+                onChange={(e) => setSpeedRate(Number(e.currentTarget.value))}
+                isDisabled={isDisabled}
+              />
             </div>
           </div>
         </div>

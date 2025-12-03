@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# 🫧 Bubble Pop Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19.2.0-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.17-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 
-Currently, two official plugins are available:
+**Bubble Pop** is a fast-paced, interactive web game built with the latest React ecosystem. Test your reflexes by popping bubbles as they appear on the screen! This project leverages the speed of Vite and the styling power of Tailwind CSS (v4) to deliver a smooth gaming experience.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. 🎈 Interactive Gameplay
+* **Pop to Score:** Click or tap on the floating bubbles to pop them.
+* **Score Tracking:** Watch your score increase in real-time with every successful pop.
+* **Visual Feedback:** Satisfying animations when bubbles are clicked.
 
-## Expanding the ESLint configuration
+### 2. ⚙️ Customizable Settings
+* **Difficulty Control:** Tailor the game to your skill level.
+* **Adjustable Parameters:** Players can modify settings such as bubble speed, spawn rate, or bubble size directly from the settings menu.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 3. ⏸️ Pause & Resume
+* **Game Control:** Need a break? Pause the game at any moment.
+* **State Preservation:** The game freezes bubbles in place and stops the timer, allowing you to resume exactly where you left off.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 📦 Tech Stack & Versions
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+This project utilizes cutting-edge versions of core libraries as defined in `package.json`:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Package | Version | Description |
+| :--- | :--- | :--- |
+| **React** | `^19.2.0` | Library for building user interfaces. |
+| **React DOM** | `^19.2.0` | DOM bindings for React. |
+| **Tailwind CSS** | `^4.1.17` | Utility-first CSS framework for styling. |
+| **Vite** | `^7.2.4` | Next-generation frontend tooling. |
+| **TypeScript** | `~5.9.3` | Strongly typed JavaScript. |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🚀 Getting Started
+
+Follow these instructions to get a copy of the project up and running on your local machine.
+
+### Prerequisites
+
+Ensure you have the following installed:
+* **Node.js** (v18 or higher recommended)
+* **npm** (comes with Node.js)
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/your-username/ball-bounces.git](https://github.com/your-username/ball-bounces.git)
+    cd ball-bounces
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Start the development server:**
+    ```bash
+    npm run dev
+    ```
+
+4.  **Open your browser:**
+    Navigate to `http://localhost:5173/` (or the port shown in your terminal) to play the game.
+
+---
+
+## 🛠️ **Available Scripts**
+
+| Script               | Command   | Description                    |
+| ----------------------- | --------------- | --------------------------- |
+| ```dev```| ```npm run dev``` | Starts the Vite development server |
+| ```build```| ```npm run build``` | Compiles TypeScript and builds the app for production |
+| ```preview```| ```npm run preview``` | Locally previews the production build |
+| ```lint```| ```npm run lint``` | Runs ESLint to check for code quality issues |
+
+---

@@ -34,7 +34,7 @@ export default function App() {
 
   const bubbleSettings = BubbleSetting(speedRate);
   const handlePopBubble = (
-    id: string,
+    id: string | number,
     variant: BubbleVariant,
     isPopped: boolean
   ) => {
